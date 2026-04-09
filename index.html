@@ -2,10 +2,11 @@
 <html>
 <head>
   <title>Secret Love ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
       background: linear-gradient(to right, #ff758c, #ff7eb3);
       color: white;
@@ -31,10 +32,10 @@
       border: none;
       margin-top: 15px;
       text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      outline: none;
     }
 
-    button {
+    .unlock-btn {
       padding: 12px 25px;
       font-size: 18px;
       margin-top: 15px;
@@ -44,28 +45,46 @@
       color: #ff758c;
       cursor: pointer;
       font-weight: bold;
-      transition: 0.3s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
-
-    button:hover { background: #ffebee; }
 
     #mainContent {
       display: none;
-      padding-bottom: 50px;
+      padding: 20px;
     }
 
-    h1 { margin-top: 40px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-    #counter { font-size: 26px; font-weight: bold; margin: 25px 0; }
-    #typing { font-size: 20px; font-style: italic; min-height: 50px; padding: 0 20px; line-height: 1.5; }
+    h1 { margin-top: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+    
+    #counter { font-size: 24px; font-weight: bold; margin: 20px 0; }
+    
+    #typing { 
+      font-size: 18px; 
+      font-style: italic; 
+      min-height: 60px; 
+      padding: 0 15px; 
+      line-height: 1.6;
+    }
 
-    .gallery { margin-top: 35px; }
+    .gallery { margin-top: 20px; position: relative; display: inline-block; }
     .gallery img {
-      width: 320px;
-      height: 320px;
+      width: 300px;
+      height: 300px;
       border-radius: 20px;
       object-fit: cover;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border: 6px solid white;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .music-control {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid white;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
     }
 
     .heart {
@@ -74,6 +93,7 @@
       font-size: 20px;
       animation: floatUp 5s linear infinite;
       z-index: -1;
+      user-select: none;
     }
 
     @keyframes floatUp {
@@ -86,63 +106,86 @@
 <body>
 
 <div id="lockScreen">
-  <h2>💖 Our Secret Corner 💖</h2>
-  <p>Password is our start date (DDMMYYYY)</p>
+  <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
+  <h2>Seng Pan & Your Secret</h2>
+  <p style="font-size: 14px; opacity: 0.9;">Password is our date (DDMMYYYY)</p>
   <input type="password" id="password" placeholder="Enter password">
-  <button onclick="checkPassword()">Unlock ❤️</button>
+  <button class="unlock-btn" onclick="unlockAndPlay()">Unlock & Start Music ❤️</button>
 </div>
 
 <div id="mainContent">
 
-<h1>❤️ Your Love ❤️ Seng Pan ❤️</h1>
+  <h1>❤️ Seng Pan ❤️</h1>
 
-<div id="counter"></div>
-<div id="typing"></div>
+  <div id="counter"></div>
+  <div id="typing"></div>
 
-<div class="gallery">
-  <img id="slide" src="photo1.jpg">
-</div>
+  <div class="gallery">
+    <img id="slide" src="photo1.jpg">
+  </div>
 
-<audio id="bgMusic" loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
+  <br>
+  <button class="music-control" onclick="toggleMusic()" id="musicBtn">🎵 Pause Music</button>
+
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
 
 </div>
 
 <script>
-  // PASSWORD CONFIG
+  // --- CONFIGURATION ---
   var correctPassword = "9122024";
+  var startDate = new Date("2024-12-09");
+  var messageText = "Seng Pan, you are my everything. Every second with you is a gift. I love you forever ❤️";
+  var images = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+  
+  var audio = document.getElementById("bgMusic");
+  var musicBtn = document.getElementById("musicBtn");
 
-  function checkPassword() {
+  // --- UNLOCK FUNCTION ---
+  function unlockAndPlay() {
     var input = document.getElementById("password").value;
     if (input === correctPassword) {
+      // Hide lock, show content
       document.getElementById("lockScreen").style.display = "none";
       document.getElementById("mainContent").style.display = "block";
       
-      // Attempt to play music
-      var audio = document.getElementById("bgMusic");
+      // Start Music
       audio.play().catch(function(e) {
-        console.log("Music blocked by browser settings.");
+        console.log("Audio play failed, user must click button.");
       });
       
+      // Start Animations
       startTyping();
+      startSlideshow();
+      startHearts();
+      updateCounter();
     } else {
-      alert("Oops! That's not our secret code 😢");
+      alert("Wrong password! Think of our special day... 😢");
     }
   }
 
-  // DATE CALCULATION
-  var startDate = new Date("2024-12-09");
+  // --- MUSIC TOGGLE ---
+  function toggleMusic() {
+    if (audio.paused) {
+      audio.play();
+      musicBtn.innerHTML = "🎵 Pause Music";
+    } else {
+      audio.pause();
+      musicBtn.innerHTML = "🎵 Play Music";
+    }
+  }
+
+  // --- DATE COUNTER ---
   function updateCounter() {
     var today = new Date();
     var diff = today - startDate;
     var days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    document.getElementById("counter").innerHTML = days + " days of loving you 💖";
+    document.getElementById("counter").innerHTML = days + " days of Love 💖";
   }
-  updateCounter();
 
-  // TYPING EFFECT
-  var messageText = "Seng Pan, you are my everything. Every second with you is a gift. I love you forever ❤️";
+  // --- TYPING EFFECT ---
   var charIndex = 0;
   function startTyping() {
     if (charIndex < messageText.length) {
@@ -152,25 +195,33 @@
     }
   }
 
-  // SLIDESHOW (Synced to your clean filenames)
-  var imagePaths = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
-  var currentImgIndex = 0;
-  setInterval(function() {
-    currentImgIndex = (currentImgIndex + 1) % imagePaths.length;
-    document.getElementById("slide").src = imagePaths[currentImgIndex];
-  }, 3500);
-
-  // ANIMATED HEARTS
-  function createHeart() {
-    var heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (Math.random() * 20 + 15) + "px";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
+  // --- SLIDESHOW ---
+  function startSlideshow() {
+    var imgElement = document.getElementById("slide");
+    var index = 0;
+    setInterval(function() {
+      index = (index + 1) % images.length;
+      imgElement.style.opacity = 0; // Fade out
+      setTimeout(function() {
+        imgElement.src = images[index];
+        imgElement.style.opacity = 1; // Fade in
+      }, 500);
+    }, 4000);
   }
-  setInterval(createHeart, 600);
+
+  // --- FLOATING HEARTS ---
+  function startHearts() {
+    setInterval(function() {
+      var heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "💖";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+      heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }, 600);
+  }
 </script>
 
 </body>

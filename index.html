@@ -19,7 +19,7 @@
       min-height: 100vh;
     }
 
-    /* 🔐 LOCK SCREEN */
+    /* 🔐 1. LOCK SCREEN */
     #lockScreen {
       position: fixed;
       inset: 0;
@@ -28,7 +28,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 2000;
+      z-index: 3000;
     }
 
     input {
@@ -55,25 +55,24 @@
       font-weight: bold;
     }
 
-    /* 🎁 GIFT BOX SCREEN */
+    /* 🎁 2. GIFT BOX SCREEN */
     #giftScreen {
       display: none;
       position: fixed;
       inset: 0;
       background: var(--secondary);
-      z-index: 1500;
+      z-index: 2000;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      transition: opacity 1s;
     }
 
     .gift-box {
       font-size: 100px;
       cursor: pointer;
-      transition: transform 0.3s;
       animation: bounce 2s infinite;
     }
-    .gift-box:hover { transform: scale(1.1); }
 
     @keyframes bounce {
       0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
@@ -81,12 +80,14 @@
       60% {transform: translateY(-15px);}
     }
 
-    /* 💘 MAIN CONTENT */
+    /* 💘 3. MAIN CONTENT */
     #mainContent {
       display: none;
+      opacity: 0;
       padding: 40px 20px;
       height: 100vh;
       overflow-y: auto;
+      transition: opacity 2s; /* Slow fade in after balloons */
     }
 
     .glass-card {
@@ -95,7 +96,7 @@
       border-radius: 30px;
       padding: 30px;
       border: 1px solid rgba(255, 255, 255, 0.3);
-      max-width: 500px;
+      max-width: 450px;
       margin: 20px auto;
     }
 
@@ -106,11 +107,10 @@
       object-fit: cover;
       border: 6px solid white;
       box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-      transition: 1s ease-in-out;
     }
 
     #musicBtn {
-      display: none; /* Hidden until unlocked */
+      display: none;
       position: fixed;
       top: 20px;
       right: 20px;
@@ -120,23 +120,22 @@
       padding: 12px;
       border-radius: 50%;
       cursor: pointer;
-      z-index: 3000;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 4000;
     }
 
-    /* DECORATIONS */
-    .heart, .balloon {
+    /* 🎈 BALLOON & HEART ANIMATION */
+    .balloon, .heart {
       position: fixed;
       pointer-events: none;
-      z-index: -1;
+      z-index: 2500; /* Higher than background but below UI if needed */
     }
 
-    .heart { animation: floatUp 4s linear forwards; }
-    .balloon { animation: floatUp 6s ease-out forwards; font-size: 40px; }
+    .balloon { font-size: 50px; animation: floatUp 6s ease-in forwards; }
+    .heart { font-size: 25px; animation: floatUp 4s linear forwards; z-index: -1; }
 
     @keyframes floatUp {
-      0% { transform: translateY(10vh) scale(1); opacity: 1; }
-      100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
+      0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
     }
   </style>
 </head>
@@ -154,13 +153,12 @@
 
 <div id="giftScreen">
   <div class="gift-box" onclick="openGift()">🎁</div>
-  <h2 style="margin-top: 20px;">You have a message!</h2>
-  <p>(Tap the box to open)</p>
+  <h2 style="margin-top: 20px;">Open your gift, Seng Pan!</h2>
 </div>
 
 <div id="mainContent">
   <div class="glass-card">
-    <h1 style="margin-bottom: 5px;">Seng Pan</h1>
+    <h1 id="userName">Seng Pan</h1>
     <div id="counter" style="font-size: 24px; font-weight: bold; margin-bottom: 20px;"></div>
     
     <div class="gallery">
@@ -182,46 +180,50 @@
   const messages = [
     "Seng Pan, you are my everything. ❤️",
     "Every second with you is a gift. ✨",
-    "Happy 486 days together! 💖",
+    "486 days of happiness together! 💖",
     "I love you forever and always. 🌹"
   ];
 
   const audio = document.getElementById("bgMusic");
 
-  // Step 1: Check Password
   function checkPass() {
     if (document.getElementById("password").value === correctPassword) {
       document.getElementById("lockScreen").style.display = "none";
       document.getElementById("giftScreen").style.display = "flex";
-      document.getElementById("musicBtn").style.display = "block"; // Show music button
     } else {
       alert("Wrong password 😢");
     }
   }
 
-  // Step 2: Open Gift & Pop Balloons
   function openGift() {
-    // Pop Balloons
-    for(let i=0; i<20; i++) {
-      setTimeout(createBalloon, i * 100);
+    // 1. MUSIC & BUTTON
+    audio.play();
+    document.getElementById("musicBtn").style.display = "block";
+
+    // 2. BALLOONS FIRST
+    for(let i=0; i<25; i++) {
+      setTimeout(createBalloon, i * 150);
     }
 
+    // 3. HIDE GIFT BOX
     document.getElementById("giftScreen").style.opacity = "0";
+    
+    // 4. WAIT FOR BALLOONS BEFORE SHOWING PHOTOS (2.5 second delay)
     setTimeout(() => {
       document.getElementById("giftScreen").style.display = "none";
-      document.getElementById("mainContent").style.display = "block";
-      audio.play();
+      const main = document.getElementById("mainContent");
+      main.style.display = "block";
+      setTimeout(() => { main.style.opacity = "1"; }, 100);
       startExperience();
-    }, 800);
+    }, 2500);
   }
 
-  // Step 3: Start everything
   function startExperience() {
-    // Counter
+    // Update Counter
     const days = Math.floor((new Date() - startDate) / (1000 * 60 * 60 * 24));
     document.getElementById("counter").innerHTML = `✨ ${days} Days Together ✨`;
 
-    // Slideshow & Typing
+    // Slideshow Loop
     let idx = 0;
     setInterval(() => {
       idx = (idx + 1) % messages.length;
@@ -235,7 +237,28 @@
     }, 5000);
 
     typeMsg(messages[0]);
-    setInterval(createHeart, 600);
+    setInterval(createHeart, 700);
+  }
+
+  function createBalloon() {
+    const b = document.createElement("div");
+    b.className = "balloon";
+    const colors = ["🎈","🎨","🌈","✨","💎","💖","🎊"];
+    b.innerHTML = colors[Math.floor(Math.random()*colors.length)];
+    b.style.left = Math.random() * 100 + "vw";
+    b.style.bottom = "-100px";
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), 6000);
+  }
+
+  function createHeart() {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "💖";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.bottom = "-50px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 4000);
   }
 
   function typeMsg(text) {
@@ -250,26 +273,6 @@
       }
     }
     t();
-  }
-
-  function createBalloon() {
-    const b = document.createElement("div");
-    b.className = "balloon";
-    b.innerHTML = ["🎈","🎨","🌈","✨","💎"][Math.floor(Math.random()*5)];
-    b.style.left = Math.random() * 100 + "vw";
-    b.style.bottom = "-50px";
-    document.body.appendChild(b);
-    setTimeout(() => b.remove(), 6000);
-  }
-
-  function createHeart() {
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.innerHTML = "💖";
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.bottom = "-20px";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 4000);
   }
 
   function toggleMusic() {

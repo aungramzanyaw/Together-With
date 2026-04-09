@@ -11,12 +11,14 @@
 
     body {
       margin: 0;
-      font-family: 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       text-align: center;
       background: radial-gradient(circle, #ff758c 0%, #ff4d6d 100%);
       color: white;
-      overflow: hidden;
+      overflow: hidden; /* Prevents scrollbars during animations */
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     /* 🔐 1. LOCK SCREEN */
@@ -41,6 +43,7 @@
       background: rgba(255,255,255,0.2);
       color: white;
       outline: none;
+      width: 250px;
     }
 
     .unlock-btn {
@@ -69,81 +72,100 @@
     }
 
     .gift-box {
-      font-size: 120px;
+      font-size: 100px;
       cursor: pointer;
       animation: bounce 2s infinite;
     }
 
     @keyframes bounce {
       0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-      40% {transform: translateY(-30px);}
-      60% {transform: translateY(-15px);}
+      40% {transform: translateY(-20px);}
+      60% {transform: translateY(-10px);}
     }
 
     /* 💘 3. MAIN CONTENT */
     #mainContent {
       display: none;
       opacity: 0;
-      padding: 40px 20px;
+      padding: 10px;
+      width: 100%;
       height: 100vh;
-      overflow-y: auto;
+      box-sizing: border-box;
       transition: opacity 2s;
+      overflow-y: auto; /* Allows scrolling if content is too tall */
     }
 
     .glass-card {
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px);
-      border-radius: 30px;
-      padding: 30px;
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 20px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       max-width: 450px;
-      margin: 20px auto;
+      width: 95%;
+      margin: 10px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
+    /* PICTURE FRAME FIX */
     .gallery img {
       width: 100%;
-      height: 450px;
-      border-radius: 20px;
+      max-width: 300px; /* Limits size on laptop */
+      height: auto;
+      max-height: 50vh; /* Limits height so it fits on phone screens */
+      border-radius: 15px;
       object-fit: cover;
-      border: 6px solid white;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      border: 5px solid white;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      transition: opacity 0.8s ease-in-out;
+    }
+
+    /* TEXT FIX */
+    h1 { font-size: 28px; margin: 10px 0; }
+    
+    #counter { 
+      font-size: 22px; 
+      font-weight: bold; 
+      margin-bottom: 15px; 
+    }
+
+    #typing { 
+      font-size: 20px; /* Bigger text for phones */
+      font-style: italic; 
+      min-height: 80px; 
+      padding: 10px;
+      line-height: 1.4;
     }
 
     #musicBtn {
       display: none;
       position: fixed;
-      top: 20px;
-      right: 20px;
+      top: 15px;
+      right: 15px;
       background: white;
       color: var(--primary);
       border: none;
-      padding: 12px;
+      padding: 10px;
       border-radius: 50%;
       cursor: pointer;
       z-index: 4000;
+      font-size: 20px;
     }
 
-    /* 🎈 MEGA BALLOONS & HEARTS */
+    /* BIG ANIMATIONS */
     .balloon, .heart {
       position: fixed;
       pointer-events: none;
       z-index: 2500;
     }
 
-    .balloon { 
-      font-size: 70px; /* Big Balloons */
-      animation: floatUp 7s ease-in forwards; 
-    }
-    
-    .heart { 
-      font-size: 45px; /* Big Hearts */
-      animation: floatUp 5s linear forwards; 
-      z-index: 2400;
-    }
+    .balloon { font-size: 60px; animation: floatUp 7s ease-in forwards; }
+    .heart { font-size: 40px; animation: floatUp 5s linear forwards; z-index: 2400; }
 
     @keyframes floatUp {
-      0% { transform: translateY(110vh) rotate(0deg) scale(0.8); opacity: 1; }
-      100% { transform: translateY(-120vh) rotate(360deg) scale(1.2); opacity: 0; }
+      0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
     }
   </style>
 </head>
@@ -153,7 +175,7 @@
 <button id="musicBtn" onclick="toggleMusic()">🎵</button>
 
 <div id="lockScreen">
-  <div style="font-size: 60px;">🔐</div>
+  <div style="font-size: 50px;">🔐</div>
   <h2>Enter Our Code</h2>
   <input type="password" id="password" placeholder="">
   <button class="unlock-btn" onclick="checkPass()">Unlock ❤️</button>
@@ -161,19 +183,19 @@
 
 <div id="giftScreen">
   <div class="gift-box" onclick="openGift()">🎁</div>
-  <h2 style="margin-top: 20px;">Open your gift!</h2>
+  <h2 style="margin-top: 15px;">Open your gift!</h2>
 </div>
 
 <div id="mainContent">
   <div class="glass-card">
-    <h1 id="userName">Our Love</h1>
-    <div id="counter" style="font-size: 24px; font-weight: bold; margin-bottom: 20px;"></div>
+    <h1>Our Love</h1>
+    <div id="counter"></div>
     
     <div class="gallery">
       <img id="slide" src="photo1.jpg">
     </div>
 
-    <div id="typing" style="font-size: 18px; margin-top: 20px; min-height: 60px;"></div>
+    <div id="typing"></div>
   </div>
 
   <audio id="bgMusic" loop>
@@ -207,8 +229,7 @@
     audio.play();
     document.getElementById("musicBtn").style.display = "block";
 
-    // Release 40 big balloons and hearts in a burst
-    for(let i=0; i<40; i++) {
+    for(let i=0; i<35; i++) {
       setTimeout(() => {
         if (Math.random() > 0.5) createBalloon();
         else createHeartPop();
@@ -243,18 +264,15 @@
     }, 5000);
 
     typeMsg(messages[0]);
-    
-    // Continuous big heart shower
-    setInterval(createHeartPop, 500);
+    setInterval(createHeartPop, 600);
   }
 
   function createBalloon() {
     const b = document.createElement("div");
     b.className = "balloon";
-    const shapes = ["🎈","🎊","🎡"];
-    b.innerHTML = shapes[Math.floor(Math.random()*shapes.length)];
-    b.style.left = Math.random() * 100 + "vw";
-    b.style.bottom = "-150px";
+    b.innerHTML = ["🎈","✨","💖"][Math.floor(Math.random()*6)];
+    b.style.left = Math.random() * 90 + "vw";
+    b.style.bottom = "-100px";
     document.body.appendChild(b);
     setTimeout(() => b.remove(), 7000);
   }
@@ -262,9 +280,8 @@
   function createHeartPop() {
     const h = document.createElement("div");
     h.className = "heart";
-    const hearts = ["❤️","💖","💝","💕","💗","💓"];
-    h.innerHTML = hearts[Math.floor(Math.random()*hearts.length)];
-    h.style.left = Math.random() * 100 + "vw";
+    h.innerHTML = ["❤️","💖","💝","💕","💗"][Math.floor(Math.random()*5)];
+    h.style.left = Math.random() * 90 + "vw";
     h.style.bottom = "-100px";
     document.body.appendChild(h);
     setTimeout(() => h.remove(), 5000);

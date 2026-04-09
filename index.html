@@ -251,7 +251,7 @@
   function createBalloon() {
     const b = document.createElement("div");
     b.className = "balloon";
-    const shapes = ["🎈","🎊","🌈","✨","💎","🎡"];
+    const shapes = ["🎈","🎊","🎡"];
     b.innerHTML = shapes[Math.floor(Math.random()*shapes.length)];
     b.style.left = Math.random() * 100 + "vw";
     b.style.bottom = "-150px";

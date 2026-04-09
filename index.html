@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>A Special Gift for Seng Pan ❤️</title>
+  <title>Our Love ❤️</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
@@ -69,7 +69,7 @@
     }
 
     .gift-box {
-      font-size: 100px;
+      font-size: 120px;
       cursor: pointer;
       animation: bounce 2s infinite;
     }
@@ -123,18 +123,27 @@
       z-index: 4000;
     }
 
+    /* 🎈 MEGA BALLOONS & HEARTS */
     .balloon, .heart {
       position: fixed;
       pointer-events: none;
       z-index: 2500;
     }
 
-    .balloon { font-size: 50px; animation: floatUp 6s ease-in forwards; }
-    .heart { font-size: 25px; animation: floatUp 4s linear forwards; z-index: -1; }
+    .balloon { 
+      font-size: 70px; /* Big Balloons */
+      animation: floatUp 7s ease-in forwards; 
+    }
+    
+    .heart { 
+      font-size: 45px; /* Big Hearts */
+      animation: floatUp 5s linear forwards; 
+      z-index: 2400;
+    }
 
     @keyframes floatUp {
-      0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+      0% { transform: translateY(110vh) rotate(0deg) scale(0.8); opacity: 1; }
+      100% { transform: translateY(-120vh) rotate(360deg) scale(1.2); opacity: 0; }
     }
   </style>
 </head>
@@ -152,7 +161,7 @@
 
 <div id="giftScreen">
   <div class="gift-box" onclick="openGift()">🎁</div>
-  <h2 style="margin-top: 20px;">Open your gift, Seng Pan!</h2>
+  <h2 style="margin-top: 20px;">Open your gift!</h2>
 </div>
 
 <div id="mainContent">
@@ -178,9 +187,9 @@
   const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
   const messages = [
     "Seng Pan, you are my everything, my world and my only one. ❤️",
-    "Every second with you is a gift. ✨",
-    "486 days of love and happiness together! 💖",
-    "I will love you more and forever. 🌹"
+    "Every second with you is a gift. ✨",
+    "486 days of love and happiness together! 💖",
+    "I will love you more and forever. 🌹"
   ];
 
   const audio = document.getElementById("bgMusic");
@@ -198,8 +207,12 @@
     audio.play();
     document.getElementById("musicBtn").style.display = "block";
 
-    for(let i=0; i<25; i++) {
-      setTimeout(createBalloon, i * 150);
+    // Release 40 big balloons and hearts in a burst
+    for(let i=0; i<40; i++) {
+      setTimeout(() => {
+        if (Math.random() > 0.5) createBalloon();
+        else createHeartPop();
+      }, i * 100);
     }
 
     document.getElementById("giftScreen").style.opacity = "0";
@@ -230,28 +243,31 @@
     }, 5000);
 
     typeMsg(messages[0]);
-    setInterval(createHeart, 700);
+    
+    // Continuous big heart shower
+    setInterval(createHeartPop, 500);
   }
 
   function createBalloon() {
     const b = document.createElement("div");
     b.className = "balloon";
-    const colors = ["🎈","🎨","🌈","✨","💎","💖","🎊"];
-    b.innerHTML = colors[Math.floor(Math.random()*colors.length)];
+    const shapes = ["🎈","🎊","🌈","✨","💎","🎡"];
+    b.innerHTML = shapes[Math.floor(Math.random()*shapes.length)];
     b.style.left = Math.random() * 100 + "vw";
-    b.style.bottom = "-100px";
+    b.style.bottom = "-150px";
     document.body.appendChild(b);
-    setTimeout(() => b.remove(), 6000);
+    setTimeout(() => b.remove(), 7000);
   }
 
-  function createHeart() {
+  function createHeartPop() {
     const h = document.createElement("div");
     h.className = "heart";
-    h.innerHTML = "💖";
+    const hearts = ["❤️","💖","💝","💕","💗","💓"];
+    h.innerHTML = hearts[Math.floor(Math.random()*hearts.length)];
     h.style.left = Math.random() * 100 + "vw";
-    h.style.bottom = "-50px";
+    h.style.bottom = "-100px";
     document.body.appendChild(h);
-    setTimeout(() => h.remove(), 4000);
+    setTimeout(() => h.remove(), 5000);
   }
 
   function typeMsg(text) {

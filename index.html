@@ -1,164 +1,279 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Secret Love ❤️</title>
+  <title>A Special Gift for Seng Pan ❤️</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      text-align: center;
-      background: linear-gradient(to right, #ff758c, #ff7eb3);
-      color: white;
-      overflow-x: hidden;
+    :root {
+      --primary: #ff4d6d;
+      --secondary: #ff758c;
     }
 
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      text-align: center;
+      background: radial-gradient(circle, #ff758c 0%, #ff4d6d 100%);
+      color: white;
+      overflow: hidden;
+      min-height: 100vh;
+    }
+
+    /* 🔐 LOCK SCREEN */
     #lockScreen {
       position: fixed;
-      width: 100%;
-      height: 100%;
-      background: #ff758c;
+      inset: 0;
+      background: var(--primary);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 100;
+      z-index: 2000;
     }
 
     input {
-      padding: 12px;
+      padding: 15px;
       font-size: 18px;
-      border-radius: 8px;
-      border: none;
-      margin-top: 15px;
+      border-radius: 30px;
+      border: 2px solid white;
+      margin-top: 20px;
       text-align: center;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      outline: none;
     }
 
     .unlock-btn {
-      padding: 12px 25px;
+      padding: 15px 40px;
       font-size: 18px;
-      margin-top: 15px;
+      margin-top: 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 30px;
       background: white;
-      color: #ff758c;
+      color: var(--primary);
       cursor: pointer;
       font-weight: bold;
     }
 
+    /* 🎁 GIFT BOX SCREEN */
+    #giftScreen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--secondary);
+      z-index: 1500;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .gift-box {
+      font-size: 100px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      animation: bounce 2s infinite;
+    }
+    .gift-box:hover { transform: scale(1.1); }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-30px);}
+      60% {transform: translateY(-15px);}
+    }
+
+    /* 💘 MAIN CONTENT */
     #mainContent {
       display: none;
-      padding: 20px;
+      padding: 40px 20px;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      padding: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      max-width: 500px;
+      margin: 20px auto;
     }
 
     .gallery img {
-      width: 300px;
-      height: 400px; /* Adjusted for portrait photos */
+      width: 100%;
+      height: 450px;
       border-radius: 20px;
       object-fit: cover;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border: 6px solid white;
-      transition: opacity 0.8s ease-in-out;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      transition: 1s ease-in-out;
     }
 
-    .heart {
+    #musicBtn {
+      display: none; /* Hidden until unlocked */
       position: fixed;
-      bottom: -10px;
-      font-size: 20px;
-      animation: floatUp 5s linear infinite;
+      top: 20px;
+      right: 20px;
+      background: white;
+      color: var(--primary);
+      border: none;
+      padding: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 3000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* DECORATIONS */
+    .heart, .balloon {
+      position: fixed;
+      pointer-events: none;
       z-index: -1;
     }
 
+    .heart { animation: floatUp 4s linear forwards; }
+    .balloon { animation: floatUp 6s ease-out forwards; font-size: 40px; }
+
     @keyframes floatUp {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+      0% { transform: translateY(10vh) scale(1); opacity: 1; }
+      100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
     }
   </style>
 </head>
 
 <body>
 
+<button id="musicBtn" onclick="toggleMusic()">🎵</button>
+
 <div id="lockScreen">
-  <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
-  <h2>Seng Pan & Your Secret</h2>
-  <input type="password" id="password" placeholder="Enter password">
-  <button class="unlock-btn" onclick="unlockAndPlay()">Unlock & Start Music ❤️</button>
+  <div style="font-size: 60px;">🔐</div>
+  <h2>Enter Our Code</h2>
+  <input type="password" id="password" placeholder="DDMMYYYY">
+  <button class="unlock-btn" onclick="checkPass()">Unlock ❤️</button>
+</div>
+
+<div id="giftScreen">
+  <div class="gift-box" onclick="openGift()">🎁</div>
+  <h2 style="margin-top: 20px;">You have a message!</h2>
+  <p>(Tap the box to open)</p>
 </div>
 
 <div id="mainContent">
-  <h1>❤️ Seng Pan ❤️</h1>
-  <div id="counter" style="font-size: 24px; font-weight: bold; margin: 20px 0;"></div>
-  <div id="typing" style="font-size: 18px; font-style: italic; min-height: 60px;"></div>
+  <div class="glass-card">
+    <h1 style="margin-bottom: 5px;">Seng Pan</h1>
+    <div id="counter" style="font-size: 24px; font-weight: bold; margin-bottom: 20px;"></div>
+    
+    <div class="gallery">
+      <img id="slide" src="photo1.jpg">
+    </div>
 
-  <div class="gallery">
-    <img id="slide" src="photo1.jpg">
+    <div id="typing" style="font-size: 18px; margin-top: 20px; min-height: 60px;"></div>
   </div>
 
-  <audio id="bgMusic" loop preload="auto">
+  <audio id="bgMusic" loop>
     <source src="music.mp3" type="audio/mpeg">
   </audio>
 </div>
 
 <script>
-  var correctPassword = "9122024";
-  var startDate = new Date("2024-12-09");
-  var messageText = "Seng Pan, you are my everything, my world and my only one. Today is our special day. We have been 486 days together. 486 days of love. Every second with you is a gift. I will love you more and forever ❤️";
-  // ENSURE THESE MATCH GITHUB EXACTLY (Case-sensitive!)
-  var images = ["photo1.jpg", "photo2.jpg", "photo3.jpg"]; 
+  const correctPassword = "9122024";
+  const startDate = new Date("2024-12-09");
+  const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+  const messages = [
+    "Seng Pan, you are my everything. ❤️",
+    "Every second with you is a gift. ✨",
+    "Happy 486 days together! 💖",
+    "I love you forever and always. 🌹"
+  ];
 
-  function unlockAndPlay() {
-    var input = document.getElementById("password").value;
-    if (input === correctPassword) {
+  const audio = document.getElementById("bgMusic");
+
+  // Step 1: Check Password
+  function checkPass() {
+    if (document.getElementById("password").value === correctPassword) {
       document.getElementById("lockScreen").style.display = "none";
-      document.getElementById("mainContent").style.display = "block";
-      
-      var audio = document.getElementById("bgMusic");
-      audio.play();
-      
-      startEverything();
+      document.getElementById("giftScreen").style.display = "flex";
+      document.getElementById("musicBtn").style.display = "block"; // Show music button
     } else {
-      alert("Wrong password! 😢");
+      alert("Wrong password 😢");
     }
   }
 
-  function startEverything() {
-    // 1. Counter
-    var today = new Date();
-    var days = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-    document.getElementById("counter").innerHTML = days + " days of Love 💖";
+  // Step 2: Open Gift & Pop Balloons
+  function openGift() {
+    // Pop Balloons
+    for(let i=0; i<20; i++) {
+      setTimeout(createBalloon, i * 100);
+    }
 
-    // 2. Typing
-    var i = 0;
-    function type() {
-      if (i < messageText.length) {
-        document.getElementById("typing").innerHTML += messageText.charAt(i);
+    document.getElementById("giftScreen").style.opacity = "0";
+    setTimeout(() => {
+      document.getElementById("giftScreen").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
+      audio.play();
+      startExperience();
+    }, 800);
+  }
+
+  // Step 3: Start everything
+  function startExperience() {
+    // Counter
+    const days = Math.floor((new Date() - startDate) / (1000 * 60 * 60 * 24));
+    document.getElementById("counter").innerHTML = `✨ ${days} Days Together ✨`;
+
+    // Slideshow & Typing
+    let idx = 0;
+    setInterval(() => {
+      idx = (idx + 1) % messages.length;
+      const img = document.getElementById("slide");
+      img.style.opacity = 0;
+      setTimeout(() => {
+        img.src = photos[idx % photos.length];
+        img.style.opacity = 1;
+      }, 500);
+      typeMsg(messages[idx]);
+    }, 5000);
+
+    typeMsg(messages[0]);
+    setInterval(createHeart, 600);
+  }
+
+  function typeMsg(text) {
+    let i = 0;
+    const el = document.getElementById("typing");
+    el.innerHTML = "";
+    function t() {
+      if (i < text.length) {
+        el.innerHTML += text.charAt(i);
         i++;
-        setTimeout(type, 70);
+        setTimeout(t, 50);
       }
     }
-    type();
+    t();
+  }
 
-    // 3. Slideshow
-    var imgElement = document.getElementById("slide");
-    var idx = 0;
-    setInterval(function() {
-      idx = (idx + 1) % images.length;
-      imgElement.style.opacity = 0;
-      setTimeout(function() {
-        imgElement.src = images[idx];
-        imgElement.style.opacity = 1;
-      }, 800);
-    }, 4000);
+  function createBalloon() {
+    const b = document.createElement("div");
+    b.className = "balloon";
+    b.innerHTML = ["🎈","🎨","🌈","✨","💎"][Math.floor(Math.random()*5)];
+    b.style.left = Math.random() * 100 + "vw";
+    b.style.bottom = "-50px";
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), 6000);
+  }
 
-    // 4. Hearts
-    setInterval(function() {
-      var heart = document.createElement("div");
-      heart.className = "heart";
-      heart.innerHTML = "💖";
-      heart.style.left = Math.random() * 100 + "vw";
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 5000);
-    }, 600);
+  function createHeart() {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "💖";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.bottom = "-20px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 4000);
+  }
+
+  function toggleMusic() {
+    audio.paused ? audio.play() : audio.pause();
   }
 </script>
 

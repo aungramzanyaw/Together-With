@@ -1,12 +1,165 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Together</title>
+  <title>Secret Love ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      text-align: center;
+      background: linear-gradient(to right, #ff758c, #ff7eb3);
+      color: white;
+    }
+
+    #lockScreen {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: #ff758c;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: white;
+      color: #ff758c;
+      cursor: pointer;
+    }
+
+    #mainContent {
+      display: none;
+    }
+
+    h1 { margin-top: 40px; }
+
+    .gallery img {
+      width: 250px;
+      height: 250px;
+      border-radius: 15px;
+      object-fit: cover;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    }
+
+    .heart {
+      position: fixed;
+      bottom: -10px;
+      font-size: 20px;
+      animation: floatUp 5s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-800px); opacity: 0; }
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>Hello!</h1>
-<p>Together with 🎉</p>
+<!-- 🔐 LOCK SCREEN -->
+<div id="lockScreen">
+  <h2>💖 Enter Our Secret 💖</h2>
+  <input type="password" id="password" placeholder="Enter password">
+  <button onclick="checkPassword()">Unlock ❤️</button>
+</div>
+
+<!-- 💘 MAIN CONTENT -->
+<div id="mainContent">
+
+<h1>❤️ Your Love ❤️ Seng Pan ❤️</h1>
+
+<div id="counter"></div>
+
+<div id="typing"></div>
+
+<div class="gallery">
+  <img id="slide" src="photo1.jpg">
+</div>
+
+<audio autoplay loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+</div>
+
+<script>
+  // 🔐 CHANGE PASSWORD HERE
+  var correctPassword = "9122024";
+
+  function checkPassword() {
+    var input = document.getElementById("password").value;
+    if (input === correctPassword) {
+      document.getElementById("lockScreen").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
+    } else {
+      alert("Wrong password 😢");
+    }
+  }
+
+  // 💕 DATE
+  var startDate = new Date("2024-12-09");
+
+  function updateCounter() {
+    var today = new Date();
+    var diff = today - startDate;
+    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    document.getElementById("counter").innerHTML =
+      days + " days together 💖";
+  }
+
+  updateCounter();
+
+  // 💌 MESSAGE
+  var text = "Seng Pan, you are my everything. Every second with you is a gift. I love you forever ❤️";
+  var i = 0;
+
+  function typing() {
+    if (i < text.length) {
+      document.getElementById("typing").innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typing, 50);
+    }
+  }
+
+  typing();
+
+  // 📸 SLIDESHOW
+  var images = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+  var index = 0;
+
+  setInterval(function() {
+    index = (index + 1) % images.length;
+    document.getElementById("slide").src = images[index];
+  }, 3000);
+
+  // 💖 HEARTS
+  function createHeart() {
+    var heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 5000);
+  }
+
+  setInterval(createHeart, 500);
+</script>
 
 </body>
 </html>

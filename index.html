@@ -104,6 +104,8 @@
       width: 90%;
       margin: 15px auto;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 2600; /* Keeps card above most objects */
     }
 
     .gallery img {
@@ -137,15 +139,15 @@
       font-size: 18px;
     }
 
-    /* 🎈 BALLOONS & HEARTS */
+    /* 🎈 VERY BIG OBJECTS */
     .balloon, .heart {
       position: fixed;
       pointer-events: none;
       z-index: 2500;
     }
 
-    .balloon { font-size: 65px; animation: floatUp 7s ease-in forwards; }
-    .heart { font-size: 45px; animation: floatUp 5s linear forwards; }
+    .balloon { font-size: 90px; animation: floatUpSmooth 9s linear forwards; }
+    .heart { font-size: 65px; animation: floatUpSmooth 6s linear forwards; }
 
     /* Color Filters for Balloons */
     .balloon-blue { filter: hue-rotate(240deg); }
@@ -153,9 +155,11 @@
     .balloon-white { filter: grayscale(100%) brightness(200%); }
     .balloon-red { filter: none; }
 
-    @keyframes floatUp {
-      0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    /* Smooth upward movement with minimal sway */
+    @keyframes floatUpSmooth {
+      0% { transform: translateY(115vh) translateX(0); opacity: 1; }
+      50% { transform: translateY(50vh) translateX(10px); }
+      100% { transform: translateY(-130vh) translateX(-10px); opacity: 0; }
     }
   </style>
 </head>
@@ -191,7 +195,7 @@
   const startDate = new Date("2024-12-09");
   const photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
   const messages = [
-    "Seng Pan, you are my everything, my world and my only one. ❤️",
+    "Chit, you are my everything, my world and my only one. ❤️",
     "Every second with you is a gift. ✨",
     "486 days of love and happiness together! 💖",
     "I will love you more and forever. 🌹"
@@ -212,11 +216,12 @@
     audio.play();
     document.getElementById("musicBtn").style.display = "block";
     
+    // Initial big burst
     for(let i=0; i<30; i++) {
       setTimeout(() => {
-        if (Math.random() > 0.5) createBalloon();
+        if (i % 2 === 0) createBalloon();
         else createHeartPop();
-      }, i * 120);
+      }, i * 150);
     }
 
     document.getElementById("giftScreen").style.opacity = "0";
@@ -247,7 +252,10 @@
     }, 5000);
 
     typeMsg(messages[0]);
-    setInterval(createHeartPop, 700);
+    
+    // CONTINUOUS BALANCED LOOP
+    setInterval(createBalloon, 1200);
+    setInterval(createHeartPop, 1200);
   }
 
   function createBalloon() {
@@ -255,15 +263,16 @@
     b.className = "balloon";
     b.innerHTML = "🎈";
     
-    // Randomly assign a color class
     const colors = ["balloon-red", "balloon-blue", "balloon-yellow", "balloon-white"];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    b.classList.add(randomColor);
+    b.classList.add(colors[Math.floor(Math.random() * colors.length)]);
 
-    b.style.left = Math.random() * 90 + "vw";
-    b.style.bottom = "-100px";
+    // POSITION: Only fly on the left or right sides (0-20% or 80-100% of screen)
+    const side = Math.random() > 0.5 ? Math.random() * 20 : 80 + Math.random() * 15;
+    b.style.left = side + "vw";
+    b.style.bottom = "-150px";
+    
     document.body.appendChild(b);
-    setTimeout(() => b.remove(), 7000);
+    setTimeout(() => b.remove(), 9000);
   }
 
   function createHeartPop() {
@@ -271,10 +280,14 @@
     h.className = "heart";
     const hearts = ["❤️","💖","💝","💕","💗"];
     h.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
-    h.style.left = Math.random() * 90 + "vw";
-    h.style.bottom = "-100px";
+    
+    // POSITION: Only fly on the left or right sides
+    const side = Math.random() > 0.5 ? Math.random() * 20 : 80 + Math.random() * 15;
+    h.style.left = side + "vw";
+    h.style.bottom = "-120px";
+    
     document.body.appendChild(h);
-    setTimeout(() => h.remove(), 5000);
+    setTimeout(() => h.remove(), 7000);
   }
 
   function typeMsg(text) {

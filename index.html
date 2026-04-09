@@ -87,7 +87,7 @@
       padding: 40px 20px;
       height: 100vh;
       overflow-y: auto;
-      transition: opacity 2s; /* Slow fade in after balloons */
+      transition: opacity 2s;
     }
 
     .glass-card {
@@ -123,11 +123,10 @@
       z-index: 4000;
     }
 
-    /* 🎈 BALLOON & HEART ANIMATION */
     .balloon, .heart {
       position: fixed;
       pointer-events: none;
-      z-index: 2500; /* Higher than background but below UI if needed */
+      z-index: 2500;
     }
 
     .balloon { font-size: 50px; animation: floatUp 6s ease-in forwards; }
@@ -147,7 +146,7 @@
 <div id="lockScreen">
   <div style="font-size: 60px;">🔐</div>
   <h2>Enter Our Code</h2>
-  <input type="password" id="password" placeholder="DDMMYYYY">
+  <input type="password" id="password" placeholder="">
   <button class="unlock-btn" onclick="checkPass()">Unlock ❤️</button>
 </div>
 
@@ -196,19 +195,15 @@
   }
 
   function openGift() {
-    // 1. MUSIC & BUTTON
     audio.play();
     document.getElementById("musicBtn").style.display = "block";
 
-    // 2. BALLOONS FIRST
     for(let i=0; i<25; i++) {
       setTimeout(createBalloon, i * 150);
     }
 
-    // 3. HIDE GIFT BOX
     document.getElementById("giftScreen").style.opacity = "0";
     
-    // 4. WAIT FOR BALLOONS BEFORE SHOWING PHOTOS (2.5 second delay)
     setTimeout(() => {
       document.getElementById("giftScreen").style.display = "none";
       const main = document.getElementById("mainContent");
@@ -219,11 +214,9 @@
   }
 
   function startExperience() {
-    // Update Counter
     const days = Math.floor((new Date() - startDate) / (1000 * 60 * 60 * 24));
     document.getElementById("counter").innerHTML = `✨ ${days} Days Together ✨`;
 
-    // Slideshow Loop
     let idx = 0;
     setInterval(() => {
       idx = (idx + 1) % messages.length;

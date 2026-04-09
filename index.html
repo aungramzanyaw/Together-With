@@ -32,7 +32,6 @@
       border: none;
       margin-top: 15px;
       text-align: center;
-      outline: none;
     }
 
     .unlock-btn {
@@ -45,7 +44,6 @@
       color: #ff758c;
       cursor: pointer;
       font-weight: bold;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
     #mainContent {
@@ -53,38 +51,14 @@
       padding: 20px;
     }
 
-    h1 { margin-top: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-    
-    #counter { font-size: 24px; font-weight: bold; margin: 20px 0; }
-    
-    #typing { 
-      font-size: 18px; 
-      font-style: italic; 
-      min-height: 60px; 
-      padding: 0 15px; 
-      line-height: 1.6;
-    }
-
-    .gallery { margin-top: 20px; position: relative; display: inline-block; }
     .gallery img {
       width: 300px;
-      height: 300px;
+      height: 400px; /* Adjusted for portrait photos */
       border-radius: 20px;
       object-fit: cover;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border: 6px solid white;
-      transition: opacity 0.5s ease-in-out;
-    }
-
-    .music-control {
-      margin-top: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid white;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 14px;
+      transition: opacity 0.8s ease-in-out;
     }
 
     .heart {
@@ -93,7 +67,6 @@
       font-size: 20px;
       animation: floatUp 5s linear infinite;
       z-index: -1;
-      user-select: none;
     }
 
     @keyframes floatUp {
@@ -108,116 +81,81 @@
 <div id="lockScreen">
   <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
   <h2>Seng Pan & Your Secret</h2>
-  <p style="font-size: 14px; opacity: 0.9;">Password is our date (DDMMYYYY)</p>
   <input type="password" id="password" placeholder="Enter password">
   <button class="unlock-btn" onclick="unlockAndPlay()">Unlock & Start Music ❤️</button>
 </div>
 
 <div id="mainContent">
-
   <h1>❤️ Seng Pan ❤️</h1>
-
-  <div id="counter"></div>
-  <div id="typing"></div>
+  <div id="counter" style="font-size: 24px; font-weight: bold; margin: 20px 0;"></div>
+  <div id="typing" style="font-size: 18px; font-style: italic; min-height: 60px;"></div>
 
   <div class="gallery">
     <img id="slide" src="photo1.jpg">
   </div>
 
-  <br>
-  <button class="music-control" onclick="toggleMusic()" id="musicBtn">🎵 Pause Music</button>
-
-  <audio id="bgMusic" loop>
+  <audio id="bgMusic" loop preload="auto">
     <source src="music.mp3" type="audio/mpeg">
   </audio>
-
 </div>
 
 <script>
-  // --- CONFIGURATION ---
   var correctPassword = "9122024";
   var startDate = new Date("2024-12-09");
   var messageText = "Seng Pan, you are my everything. Every second with you is a gift. I love you forever ❤️";
-  var images = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
-  
-  var audio = document.getElementById("bgMusic");
-  var musicBtn = document.getElementById("musicBtn");
+  // ENSURE THESE MATCH GITHUB EXACTLY (Case-sensitive!)
+  var images = ["photo1.jpg", "photo2.jpg", "photo3.jpg"]; 
 
-  // --- UNLOCK FUNCTION ---
   function unlockAndPlay() {
     var input = document.getElementById("password").value;
     if (input === correctPassword) {
-      // Hide lock, show content
       document.getElementById("lockScreen").style.display = "none";
       document.getElementById("mainContent").style.display = "block";
       
-      // Start Music
-      audio.play().catch(function(e) {
-        console.log("Audio play failed, user must click button.");
-      });
-      
-      // Start Animations
-      startTyping();
-      startSlideshow();
-      startHearts();
-      updateCounter();
-    } else {
-      alert("Wrong password! Think of our special day... 😢");
-    }
-  }
-
-  // --- MUSIC TOGGLE ---
-  function toggleMusic() {
-    if (audio.paused) {
+      var audio = document.getElementById("bgMusic");
       audio.play();
-      musicBtn.innerHTML = "🎵 Pause Music";
+      
+      startEverything();
     } else {
-      audio.pause();
-      musicBtn.innerHTML = "🎵 Play Music";
+      alert("Wrong password! 😢");
     }
   }
 
-  // --- DATE COUNTER ---
-  function updateCounter() {
+  function startEverything() {
+    // 1. Counter
     var today = new Date();
-    var diff = today - startDate;
-    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    var days = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
     document.getElementById("counter").innerHTML = days + " days of Love 💖";
-  }
 
-  // --- TYPING EFFECT ---
-  var charIndex = 0;
-  function startTyping() {
-    if (charIndex < messageText.length) {
-      document.getElementById("typing").innerHTML += messageText.charAt(charIndex);
-      charIndex++;
-      setTimeout(startTyping, 70);
+    // 2. Typing
+    var i = 0;
+    function type() {
+      if (i < messageText.length) {
+        document.getElementById("typing").innerHTML += messageText.charAt(i);
+        i++;
+        setTimeout(type, 70);
+      }
     }
-  }
+    type();
 
-  // --- SLIDESHOW ---
-  function startSlideshow() {
+    // 3. Slideshow
     var imgElement = document.getElementById("slide");
-    var index = 0;
+    var idx = 0;
     setInterval(function() {
-      index = (index + 1) % images.length;
-      imgElement.style.opacity = 0; // Fade out
+      idx = (idx + 1) % images.length;
+      imgElement.style.opacity = 0;
       setTimeout(function() {
-        imgElement.src = images[index];
-        imgElement.style.opacity = 1; // Fade in
-      }, 500);
+        imgElement.src = images[idx];
+        imgElement.style.opacity = 1;
+      }, 800);
     }, 4000);
-  }
 
-  // --- FLOATING HEARTS ---
-  function startHearts() {
+    // 4. Hearts
     setInterval(function() {
       var heart = document.createElement("div");
       heart.className = "heart";
       heart.innerHTML = "💖";
       heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = (Math.random() * 20 + 15) + "px";
-      heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
       document.body.appendChild(heart);
       setTimeout(() => heart.remove(), 5000);
     }, 600);
